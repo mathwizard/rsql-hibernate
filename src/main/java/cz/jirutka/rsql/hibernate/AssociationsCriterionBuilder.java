@@ -72,7 +72,7 @@ public class AssociationsCriterionBuilder extends AbstractCriterionBuilder {
             if (!isPropertyName(property, metadata)) {
                 throw new UnknownSelectorException(path[i]);
             }
-            lastClass = findPropertyType(property, metadata);
+            lastClass = builder.findPropertyType(property, metadata);
             
             LOG.trace("Nesting level {}: property '{}' of entity {}",
                     new Object[]{i, property, lastClass.getSimpleName()});

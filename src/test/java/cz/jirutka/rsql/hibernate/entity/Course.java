@@ -25,8 +25,11 @@ package cz.jirutka.rsql.hibernate.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import org.hibernate.annotations.NaturalId;
+
+import java.util.Set;
 
 /**
  *
@@ -48,8 +51,18 @@ public class Course extends AbstractTestEntity {
     @ManyToOne
     private Department department;
 
-    
-    
+    @ManyToMany
+    private Set<Person> students;
+
+
+    public Set<Person> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Person> students) {
+        this.students = students;
+    }
+
     public boolean isActive() {
         return active;
     }

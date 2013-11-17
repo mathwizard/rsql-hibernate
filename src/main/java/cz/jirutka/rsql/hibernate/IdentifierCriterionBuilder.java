@@ -55,7 +55,7 @@ public class IdentifierCriterionBuilder extends AbstractCriterionBuilder {
             String argument, Class<?> entityClass, String alias, CriteriaBuilder builder) 
             throws ArgumentFormatException, UnknownSelectorException {
             
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        Class<?> type = builder.findPropertyType(property, builder.getClassMetadata(entityClass));
         ClassMetadata assocClassMetadata = builder.getClassMetadata(type);
         Class<?> idType = assocClassMetadata.getIdentifierType().getReturnedClass();
         

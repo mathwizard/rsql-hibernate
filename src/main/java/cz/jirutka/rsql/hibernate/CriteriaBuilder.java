@@ -101,7 +101,17 @@ public interface CriteriaBuilder {
      *         such entity was mapped.
      */
     ClassMetadata getClassMetadata(Class<?> entityClass);
-    
+
+    /**
+     * Find the java type class of given named property in entity's metadata.
+     *
+     * @param property property name
+     * @param classMetadata entity metadata
+     * @return The java type class of given property.
+     * @throws org.hibernate.HibernateException If entity does not contain such property.
+     */
+    Class<?> findPropertyType(String property, ClassMetadata classMetadata);
+
     /**
      * Get Mapper used to translate selectors to property names.
      * 

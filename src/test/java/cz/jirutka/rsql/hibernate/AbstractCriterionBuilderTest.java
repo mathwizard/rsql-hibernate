@@ -25,11 +25,17 @@ package cz.jirutka.rsql.hibernate;
 
 import cz.jirutka.rsql.hibernate.entity.Department;
 import cz.jirutka.rsql.hibernate.entity.Course;
+import cz.jirutka.rsql.hibernate.entity.Person;
+import org.hibernate.EntityMode;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.type.CollectionType;
+import org.hibernate.type.Type;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -103,10 +109,11 @@ public abstract class AbstractCriterionBuilderTest {
         SessionFactory sf = SessionFactoryInitializer.getSessionFactory();
         ClassMetadata classMetadata = sf.getClassMetadata(Course.class);
         
-        assertSame(String.class, instance.findPropertyType("code", classMetadata));
-        assertSame(Boolean.class, instance.findPropertyType("active", classMetadata));
-        assertSame(Department.class, instance.findPropertyType("department", classMetadata));
-        assertNotSame(Integer.class, instance.findPropertyType("code", classMetadata));
+        assertSame(String.class, parent.findPropertyType("code", classMetadata));
+        assertSame(Person.class, parent.findPropertyType("students", classMetadata));
+        assertSame(Boolean.class, parent.findPropertyType("active", classMetadata));
+        assertSame(Department.class, parent.findPropertyType("department", classMetadata));
+        assertNotSame(Integer.class, parent.findPropertyType("code", classMetadata));
     }
     
     
@@ -152,6 +159,19 @@ public abstract class AbstractCriterionBuilderTest {
         @Override
         public ClassMetadata getClassMetadata(Class<?> entityClass) {
             return sessionFactory.getClassMetadata(entityClass);
+        }
+
+        @Override
+        public Class<?> findPropertyType(String property, ClassMetadata classMetadata)
+                throws HibernateException {
+            Type probableType = classMetadata.getPropertyType(property);
+
+            if(probableType instanceof CollectionType) {
+                String associatedEntityName = ((CollectionType) probableType).getAssociatedEntityName((SessionFactoryImplementor) sessionFactory);
+                return sessionFactory.getClassMetadata(associatedEntityName).getMappedClass(EntityMode.POJO);
+            } else {
+                return probableType.getReturnedClass();
+            }
         }
 
         @Override

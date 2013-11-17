@@ -52,7 +52,7 @@ public class DefaultCriterionBuilder extends AbstractCriterionBuilder {
             throw new UnknownSelectorException(property);
         }
         
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        Class<?> type = builder.findPropertyType(property, builder.getClassMetadata(entityClass));
         Object castedArgument = builder.getArgumentParser().parse(argument, type);
         
         return createCriterion(alias + property, operator, castedArgument);

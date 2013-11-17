@@ -23,11 +23,17 @@
  */
 package cz.jirutka.rsql.hibernate;
 
+import cz.jirutka.commons.hibernate.HibernateUtils;
 import cz.jirutka.rsql.parser.model.Comparison;
+import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.type.CollectionType;
+import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -273,19 +279,6 @@ public abstract class AbstractCriterionBuilder {
             if (name.equals(property)) return true;
         }
         return false;
-    }
-    
-    /**
-     * Find the java type class of given named property in entity's metadata.
-     * 
-     * @param property property name
-     * @param classMetadata entity metadata
-     * @return The java type class of given property.
-     * @throws HibernateException If entity does not contain such property.
-     */
-    protected Class<?> findPropertyType(String property, ClassMetadata classMetadata) 
-            throws HibernateException {
-        return classMetadata.getPropertyType(property).getReturnedClass();
     }
 
     /**

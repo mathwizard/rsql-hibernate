@@ -55,7 +55,7 @@ public class NaturalIdCriterionBuilder extends IdentifierCriterionBuilder {
             String argument, Class<?> entityClass, String alias, CriteriaBuilder builder) 
             throws ArgumentFormatException, UnknownSelectorException {
 
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        Class<?> type = builder.findPropertyType(property, builder.getClassMetadata(entityClass));
         ClassMetadata classMetadata = builder.getClassMetadata(type);
         int[] idProps = classMetadata.getNaturalIdentifierProperties();
         Class<?> idType = classMetadata.getPropertyTypes()[idProps[0]].getReturnedClass();
@@ -89,7 +89,7 @@ public class NaturalIdCriterionBuilder extends IdentifierCriterionBuilder {
      */
     protected boolean hasNaturalIdentifier(String property, Class<?> entityClass, CriteriaBuilder builder) 
             throws HibernateException {
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        Class<?> type = builder.findPropertyType(property, builder.getClassMetadata(entityClass));
         ClassMetadata assocClassMetadata = builder.getClassMetadata(type);
         
         return assocClassMetadata.hasNaturalIdentifier();

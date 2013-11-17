@@ -36,15 +36,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
+import org.hibernate.EntityMode;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.impl.CriteriaImpl.Subcriteria;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.type.CollectionType;
+import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -401,6 +406,19 @@ public class RSQL2CriteriaConverterImpl implements RSQL2CriteriaConverter {
         @Override
         public ClassMetadata getClassMetadata(Class<?> entityClass) {
             return sessionFactory.getClassMetadata(entityClass);
+        }
+
+        @Override
+        public Class<?> findPropertyType(String property, ClassMetadata classMetadata)
+                throws HibernateException {
+            Type probableType = classMetadata.getPropertyType(property);
+
+            if(probableType instanceof CollectionType) {
+                String associatedEntityName = ((CollectionType) probableType).getAssociatedEntityName((SessionFactoryImplementor) sessionFactory);
+                return sessionFactory.getClassMetadata(associatedEntityName).getMappedClass(EntityMode.POJO);
+            } else {
+                return probableType.getReturnedClass();
+            }
         }
 
         @Override
