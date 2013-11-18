@@ -44,9 +44,9 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.engine.SessionFactoryImplementor;
-import org.hibernate.impl.CriteriaImpl;
-import org.hibernate.impl.CriteriaImpl.Subcriteria;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+
+import org.hibernate.internal.CriteriaImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.Type;
@@ -247,14 +247,14 @@ public class RSQL2CriteriaConverterImpl implements RSQL2CriteriaConverter {
             // we cannot pick up aliases in this loop because when you create 
             // subcriterias by createAlias() instead of createCriteria(), 
             // there are not nested!
-            while (criteria instanceof Subcriteria) {
-                criteria = ((Subcriteria) criteria).getParent();
+            while (criteria instanceof CriteriaImpl.Subcriteria) {
+                criteria = ((CriteriaImpl.Subcriteria) criteria).getParent();
             }
             CriteriaImpl rootCriteria = (CriteriaImpl) criteria;
             
-            Iterator<Subcriteria> it = rootCriteria.iterateSubcriteria();
+            Iterator<CriteriaImpl.Subcriteria> it = rootCriteria.iterateSubcriteria();
             while (it.hasNext()) {
-                Subcriteria sub = it.next();
+                CriteriaImpl.Subcriteria sub = it.next();
                 LOG.trace("Found association aliase '{}' for path '{}'", 
                         sub.getAlias(), sub.getPath()); 
                 aliases.put(sub.getPath(), sub.getAlias());
@@ -415,7 +415,7 @@ public class RSQL2CriteriaConverterImpl implements RSQL2CriteriaConverter {
 
             if(probableType instanceof CollectionType) {
                 String associatedEntityName = ((CollectionType) probableType).getAssociatedEntityName((SessionFactoryImplementor) sessionFactory);
-                return sessionFactory.getClassMetadata(associatedEntityName).getMappedClass(EntityMode.POJO);
+                return sessionFactory.getClassMetadata(associatedEntityName).getMappedClass();
             } else {
                 return probableType.getReturnedClass();
             }

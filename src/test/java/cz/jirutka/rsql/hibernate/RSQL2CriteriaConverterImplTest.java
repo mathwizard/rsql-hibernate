@@ -23,7 +23,7 @@
  */
 package cz.jirutka.rsql.hibernate;
 
-import org.hibernate.impl.CriteriaImpl.Subcriteria;
+
 import cz.jirutka.rsql.hibernate.RSQL2CriteriaConverterImpl.InnerBuilder;
 import org.hibernate.Criteria;
 import cz.jirutka.rsql.hibernate.entity.Course;
@@ -37,7 +37,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.impl.CriteriaImpl;
+import org.hibernate.internal.CriteriaImpl;
+import org.hibernate.sql.JoinType;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -281,26 +282,26 @@ public class RSQL2CriteriaConverterImplTest {
         } catch (AssertionError ex) { /*OK*/ }
         
         int i = 0;
-        Iterator<Subcriteria> it = ((CriteriaImpl) criteria).iterateSubcriteria();
+        Iterator<CriteriaImpl.Subcriteria> it = ((CriteriaImpl) criteria).iterateSubcriteria();
         while (it.hasNext()) {
-            Subcriteria sub = it.next();
+            CriteriaImpl.Subcriteria sub = it.next();
             switch (i) {
                 case 0 : { 
                     assertEquals("foo", sub.getPath());
                     assertEquals("alias1", sub.getAlias());
-                    assertEquals(Criteria.INNER_JOIN, sub.getJoinType());
+                    assertEquals(JoinType.INNER_JOIN, sub.getJoinType());
                     break;
                 }
                 case 1 : {
                     assertEquals("bar", sub.getPath());
                     assertEquals("alias2", sub.getAlias());
-                    assertEquals(Criteria.LEFT_JOIN, sub.getJoinType());
+                    assertEquals(JoinType.LEFT_OUTER_JOIN, sub.getJoinType());
                     break;
                 }
                 case 2 : {
                     assertEquals("baz", sub.getPath());
                     assertEquals("alias3", sub.getAlias());
-                    assertEquals(Criteria.FULL_JOIN, sub.getJoinType());
+                    assertEquals(JoinType.FULL_JOIN, sub.getJoinType());
                     break;
                 }
                 default : fail("Should not be here!");

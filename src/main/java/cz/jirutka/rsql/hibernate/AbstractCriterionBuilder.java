@@ -23,17 +23,10 @@
  */
 package cz.jirutka.rsql.hibernate;
 
-import cz.jirutka.commons.hibernate.HibernateUtils;
 import cz.jirutka.rsql.parser.model.Comparison;
-import org.hibernate.EntityMode;
-import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.type.CollectionType;
-import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
